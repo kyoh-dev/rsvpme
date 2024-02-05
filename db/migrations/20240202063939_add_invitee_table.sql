@@ -1,4 +1,6 @@
 -- migrate:up
+PRAGMA foreign_keys = ON;
+
 CREATE TABLE invitee (
     id INTEGER NOT NULL PRIMARY KEY,
     uuid TEXT NOT NULL,
