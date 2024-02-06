@@ -8,14 +8,15 @@ import (
 )
 
 type Database struct {
-	DB *sqlx.DB
+	DB  *sqlx.DB
+	url string
 }
 
-func (d *Database) Connect(uri string) error {
+func (d *Database) Connect() error {
 	var err error
 
 	// TODO: Update to pgsql
-	d.DB, err = sqlx.Connect("sqlite3", uri)
+	d.DB, err = sqlx.Connect("postgres", d.url)
 	if err != nil {
 		return fmt.Errorf("unable to connect to database: %w", err)
 	}

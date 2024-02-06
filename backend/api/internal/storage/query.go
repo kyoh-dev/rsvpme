@@ -14,10 +14,10 @@ func (d *Database) GetInvitee(id int) (Invitee, error) {
 	q := `
 		SELECT first_name, last_name, email, rsvp
 		FROM invitee
-		WHERE id = ?
+		WHERE id = $1
 	`
 
-	err := d.DB.Get(&inv, q)
+	err := d.DB.Get(&inv, q, id)
 
 	return inv, err
 }

@@ -5,7 +5,7 @@ CREATE TABLE invitee (
     last_name TEXT NOT NULL,
     email TEXT,
     rsvp BOOLEAN NOT NULL,
-    event_id INTEGER NOT NULL,
+    event_id INT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
     FOREIGN KEY (event_id) REFERENCES event(id) ON DELETE CASCADE
