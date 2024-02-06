@@ -1,10 +1,10 @@
-package db
+package storage
 
 import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
 type Database struct {
@@ -13,8 +13,9 @@ type Database struct {
 
 func (d *Database) Connect(uri string) error {
 	var err error
-	d.DB, err = sqlx.Connect("sqlite3", uri)
 
+	// TODO: Update to pgsql
+	d.DB, err = sqlx.Connect("sqlite3", uri)
 	if err != nil {
 		return fmt.Errorf("unable to connect to database: %w", err)
 	}

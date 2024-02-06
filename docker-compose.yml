@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  dbtest:
+    image: postgres:13.13
+    ports:
+      - "27902:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    environment:
+      - POSTGRES_DB=rsvpme
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+
+volumes:
+  pgdata:

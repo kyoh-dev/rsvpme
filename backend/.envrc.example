@@ -1,0 +1,6 @@
+export PG_HOST="localhost"
+export PG_PORT="27902"
+export PG_USER="test"
+export PG_PASSWORD="test"
+export PG_DBNAME="rsvpme"
+export DATABASE_URL="postgres://$PG_USER:$PG_PASSWORD@$PG_HOST:$PG_PORT/$PG_DBNAME?sslmode=disable"
