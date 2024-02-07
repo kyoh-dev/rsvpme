@@ -59,20 +59,6 @@ CREATE TABLE public.event (
 
 
 --
--- Name: event_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-ALTER TABLE public.event ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
-    SEQUENCE NAME public.event_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
-
-
---
 -- Name: invitee; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -85,6 +71,37 @@ CREATE TABLE public.invitee (
     event_id integer NOT NULL,
     created_at timestamp without time zone DEFAULT now() NOT NULL,
     updated_at timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: event_detail; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.event_detail AS
+ SELECT event.uuid,
+    event.title,
+    event.description,
+    event.start_datetime,
+    event.finish_datetime,
+    event.address,
+    ( SELECT json_agg(json_build_object('first_name', invitee.first_name, 'last_name', invitee.last_name, 'email', invitee.email, 'rsvp', invitee.rsvp)) AS invitees_array
+           FROM public.invitee
+          WHERE (event.id = invitee.event_id)) AS invitees
+   FROM public.event;
+
+
+--
+-- Name: event_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+ALTER TABLE public.event ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.event_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
 );
 
 
@@ -175,4 +192,5 @@ ALTER TABLE ONLY public.invitee
 
 INSERT INTO public.schema_migrations (version) VALUES
     ('20240202061936'),
-    ('20240202063939');
+    ('20240202063939'),
+    ('20240207015424');

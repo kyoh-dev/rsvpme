@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,13 +24,15 @@ func TestInsertEvent(t *testing.T) {
 }
 
 func TestReadEventByUuid(t *testing.T) {
-	uuid := "ecd9d178-b8cd-4373-90fa-229c320340ca"
-	assert := assert.New(t)
+	t.Run("find record using uuid", func(t *testing.T) {
+		uuid := uuid.New().String()
+		assert := assert.New(t)
 
-	q := "INSERT INTO event (uuid, title, description, start_datetime, address) VALUES ($1, $2, $3, $4)"
-	testDb.DB.MustExec(q, "Open House", "Bert's open house inspection", time.Now(), "5 Sesame Street")
+		q := "INSERT INTO event (uuid, title, description, start_datetime, address) VALUES ($1, $2, $3, $4, $5)"
+		testDb.DB.MustExec(q, uuid, "Open House", "Bert's open house inspection", time.Now(), "5 Sesame Street")
 
-	e, err := testDb.ReadEventByUuid(uuid)
-	assert.NoError(err)
-	assert.Equal(uuid, e.Uuid)
+		e, err := testDb.ReadEventByUuid(uuid)
+		assert.NoError(err)
+		assert.Equal(uuid, e.Uuid)
+	})
 }
