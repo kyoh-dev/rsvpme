@@ -23,11 +23,11 @@ func TestInsertEvent(t *testing.T) {
 }
 
 func TestReadEventByUuid(t *testing.T) {
-	var uuid string
+	uuid := "ecd9d178-b8cd-4373-90fa-229c320340ca"
 	assert := assert.New(t)
-	q := "INSERT INTO event (title, description, start_datetime, address) VALUES ($1, $2, $3, $4) RETURNING uuid"
-	err := testDb.DB.QueryRowx(q, "Open House", "Bert's open house inspection", time.Now(), "5 Sesame Street").Scan(&uuid)
-	assert.NoError(err)
+
+	q := "INSERT INTO event (uuid, title, description, start_datetime, address) VALUES ($1, $2, $3, $4)"
+	testDb.DB.MustExec(q, "Open House", "Bert's open house inspection", time.Now(), "5 Sesame Street")
 
 	e, err := testDb.ReadEventByUuid(uuid)
 	assert.NoError(err)
