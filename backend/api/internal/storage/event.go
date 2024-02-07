@@ -31,3 +31,18 @@ func (d *Database) InsertEvent(e Event) (int, string, error) {
 
 	return id, uuid, nil
 }
+
+func (d *Database) ReadEventByUuid(uuid string) (*Event, error) {
+	var e Event
+	q := `
+		SELECT uuid, title, description, start_datetime, finish_datetime, address
+		FROM event
+		WHERE uuid = $1
+	`
+	err := d.DB.Get(&e, q, uuid)
+	if err != nil {
+		return nil, err
+	}
+
+	return &e, nil
+}
