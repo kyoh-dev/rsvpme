@@ -24,9 +24,9 @@ func TestInsertEvent(t *testing.T) {
 }
 
 func TestReadEventByUuid(t *testing.T) {
-	t.Run("find record using uuid", func(t *testing.T) {
-		uuid := uuid.New().String()
+	t.Run("find event using uuid", func(t *testing.T) {
 		assert := assert.New(t)
+		uuid := uuid.New().String()
 
 		q := "INSERT INTO event (uuid, title, description, start_datetime, address) VALUES ($1, $2, $3, $4, $5)"
 		testDb.DB.MustExec(q, uuid, "Open House", "Bert's open house inspection", time.Now(), "5 Sesame Street")
@@ -34,5 +34,8 @@ func TestReadEventByUuid(t *testing.T) {
 		e, err := testDb.ReadEventByUuid(uuid)
 		assert.NoError(err)
 		assert.Equal(uuid, e.Uuid)
+	})
+	t.Run("unmarshal event invitees", func(t *testing.T) {
+		
 	})
 }

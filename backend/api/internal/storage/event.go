@@ -50,7 +50,7 @@ func (d *Database) ReadEventByUuid(uuid string) (*Event, error) {
 	`
 	err := d.DB.Get(&e, q, uuid)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not read event from db: %s", err)
 	}
 
 	return &e, nil
