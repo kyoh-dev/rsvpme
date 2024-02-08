@@ -5,33 +5,32 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/uuid"
+	"github.com/jmoiron/sqlx/types"
 )
 
 type Event struct {
-	Uuid     string
-	Title    string
-	Descr    string       `db:"description"`
-	Start    time.Time    `db:"start_datetime"`
-	Finish   sql.NullTime `db:"finish_datetime"`
-	Address  string
-	Invitees *[]Invitee
+	Uuid     string         `db:"uuid" json:"uuid"`
+	Title    string         `db:"title" json:"title"`
+	Descr    string         `db:"description" json:"description"`
+	Start    time.Time      `db:"start_datetime" json:"startDatetime"`
+	Finish   sql.NullTime   `db:"finish_datetime" json:"finishDatetime"`
+	Address  string         `db:"address" json:"address"`
+	Invitees types.JSONText `db:"invitees" json:"invitees"`
 }
 
-func (d *Database) InsertEvent(e Event) (int, string, error) {
+func (d *Database) InsertEvent(e Event) (int, error) {
 	var id int
-	uuid := uuid.New().String()
 	q := `
 		INSERT INTO event (uuid, title, description, start_datetime, finish_datetime, address) 
 		VALUES ($1, $2, $3, $4, $5, $6) 
 		RETURNING id
 	`
-	err := d.DB.QueryRowx(q, uuid, e.Title, e.Descr, e.Start, e.Finish, e.Address).Scan(&id)
+	err := d.DB.QueryRowx(q, e.Uuid, e.Title, e.Descr, e.Start, e.Finish, e.Address).Scan(&id)
 	if err != nil {
-		return 0, "", fmt.Errorf("could not insert event: %w", err)
+		return 0, fmt.Errorf("could not insert event: %w", err)
 	}
 
-	return id, uuid, nil
+	return id, nil
 }
 
 func (d *Database) ReadEventByUuid(uuid string) (*Event, error) {
@@ -52,6 +51,7 @@ func (d *Database) ReadEventByUuid(uuid string) (*Event, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not read event from db: %s", err)
 	}
+	// TODO: Unmarshall invitees to slice of structs
 
 	return &e, nil
 }

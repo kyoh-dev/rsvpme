@@ -9,7 +9,7 @@ import (
 var testDb Database
 
 func setup() {
-	if err := testDb.Init(); err != nil {
+	if err := testDb.Init(os.Getenv("DATABASE_URL")); err != nil {
 		log.Fatalf("test db init failed: %s", err)
 	}
 }

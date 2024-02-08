@@ -2,7 +2,6 @@ package storage
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -14,9 +13,9 @@ type Database struct {
 	MaxIdleConns int
 }
 
-func (d *Database) Init() error {
+func (d *Database) Init(url string) error {
 	var err error
-	d.DB, err = sqlx.Connect("postgres", os.Getenv("DATABASE_URL"))
+	d.DB, err = sqlx.Connect("postgres", url)
 	if err != nil {
 		return fmt.Errorf("unable to connect to database: %w", err)
 	}
