@@ -1,0 +1,19 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+
+import Field from "./Field.astro";
+
+export interface Props
+  extends HTMLAttributes<"textarea">,
+    ComponentProps<typeof Field> {}
+
+const { label, error, required = false, ...props } = Astro.props;
+---
+<Field label={label} error={error}>
+  <textarea
+    class="textarea"
+    required={required || false}
+    required={required}
+    {...props}
+  />
+</Field>

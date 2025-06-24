@@ -1,0 +1,19 @@
+---
+interface Props {
+  label: string;
+  error?: (string | null) | (string | null | undefined)[];
+}
+
+const { label, error } = Astro.props;
+let errorAsArray: (string | null | undefined)[] = [];
+if (error) errorAsArray = Array.isArray(error) ? error : [error];
+---
+<div>
+  <label class="floating-label">
+    <span class="">{label}</span>
+    <slot />
+  </label>
+  {errorAsArray.filter((v) => !!v).map((err) => (
+    <span class="text-red-500 text-sm">{err}</span>
+  ))}
+</div>

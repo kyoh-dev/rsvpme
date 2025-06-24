@@ -1,0 +1,78 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { z } from "zod";
+import { defineForm, parseFormData } from "~/components/Form";
+import InputField from "~/components/Form/InputField.astro";
+import TextareaField from "~/components/Form/TextareaField.astro";
+
+type Props = HTMLAttributes<"form"> & {
+  id: string;
+};
+const { id, class: className, ...props } = Astro.props as Props;
+
+const { formId, formData } = await defineForm(Astro.request, { id });
+const schema = z.object({
+  formId: z.string(),
+  title: z
+    .string()
+    .min(1, "Title is required")
+    .max(200, "Title must be less than 200 characters"),
+  description: z.string().optional(),
+  date: z
+    .string()
+    .min(1, "Date is required")
+    .refine((val) => !Number.isNaN(Date.parse(val)), {
+      message: "Invalid date format",
+    }),
+  time: z
+    .string()
+    .min(1, "Time is required")
+    .refine(
+      (val) => {
+        const timeParts = val.split(":");
+        return (
+          timeParts.length === 2 &&
+          !Number.isNaN(Number(timeParts[0])) &&
+          !Number.isNaN(Number(timeParts[1]))
+        );
+      },
+      {
+        message: "Invalid time format. Use HH:MM format.",
+      },
+    ),
+});
+const form = parseFormData(schema, formData);
+---
+<form id={formId} method="post" class:list={["space-y-4 flex flex-col gap-2", className]} {...props}>
+  <input type="hidden" name="formId" value={formId} />
+  <InputField
+    name="title"
+    label="Event Title"
+    type="text"
+    required
+    value={form.status !== 'no_form' ? form.payload?.title as string : undefined}
+    error={form.status === 'error' ? form.error?.title : undefined}
+  />
+  <TextareaField
+    name="description"
+    label="Event Description"
+    value={form.status !== 'no_form' ? form.payload?.description as string : undefined}
+    error={form.status === 'error' ? form.error?.description : undefined}
+  />
+  <InputField
+    name="date"
+    label="Event Date"
+    type="date"
+    required
+    value={form.status !== 'no_form' ? form.payload?.date as string : undefined}
+    error={form.status === 'error' ? form.error?.date : undefined}
+  />
+  <InputField
+    name="time"
+    label="Event Time"
+    type="time"
+    value={form.status !== 'no_form' ? form.payload?.time as string : undefined}
+    error={form.status === 'error' ? form.error?.time : undefined}
+  />
+  <button type="submit" class="btn btn-primary">Create Event</button>
+</form>
