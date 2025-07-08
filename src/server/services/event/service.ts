@@ -35,19 +35,10 @@ class EventService {
     };
   }
 
-  async get({ ulid, password }: { ulid: string; password: string }) {
+  async get(ulid: string) {
     const event = await db.query.event.findFirst({
       where: eq(schema.event.ulid, ulid),
     });
-
-    if (!event) {
-      throw new Error("Event not found");
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, event.password);
-    if (!isPasswordValid) {
-      throw new Error("Invalid password");
-    }
 
     return event;
   }

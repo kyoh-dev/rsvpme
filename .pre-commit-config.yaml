@@ -3,12 +3,12 @@ repos:
     hooks:
       - id: tidy
         language: system
-        name: 'npm run tidy'
-        entry: npm run tidy
+        name: 'pnpm run tidy'
+        entry: pnpm run tidy
         files: ^src/
 
       - id: typecheck
         language: system
-        name: 'npm run typecheck'
-        entry: npm run typecheck
+        name: 'pnpm run typecheck'
+        entry: pnpm run typecheck
         files: ^src/
